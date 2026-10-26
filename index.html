@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>يابلاش</title>
+<meta property="og:title" content="يابلاش – إكسسوارات ومكياج وعطور"><meta property="og:description" content="كل شي جديد ومميز في مارع. اطلب عبر واتساب.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap">
+<style>
+:root{--r:#D93A73;--p:#3B1230;--b:#FFF1F5;--g:#B8892B;--i:#2A1A24}
+*{box-sizing:border-box;margin:0}body{font:16px/1.6 Cairo,Tahoma,sans-serif;background:var(--b);color:var(--i);padding-bottom:70px}
+button{font:inherit;cursor:pointer;border:0}a{color:inherit}:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+.bar{background:var(--g);color:#fff;text-align:center;padding:6px;font-size:14px}
+header{background:var(--p);color:#fff;padding:28px 18px 22px;text-align:center}
+h1{font-size:44px;font-weight:800;letter-spacing:0}header p{opacity:.85;font-size:15px}
+.top{position:sticky;top:0;z-index:5;background:var(--b);padding:10px 14px;border-bottom:1px solid #f0cdd9}
+input[type=search]{width:100%;padding:10px 14px;border:2px solid #f0cdd9;border-radius:24px;font:inherit;background:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px}.chips button{white-space:nowrap;padding:6px 16px;border-radius:20px;background:#fff;color:var(--p);border:1px solid #f0cdd9}.chips .on{background:var(--r);color:#fff;border-color:var(--r)}
+main{max-width:1000px;margin:auto;padding:14px}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}.sec{font-size:21px;color:var(--p);margin:26px 0 10px;padding-inline-start:10px;border-inline-start:5px solid var(--r)}.sec:first-child{margin-top:6px}
+.wb{display:inline-block;margin-top:14px;background:#25a35a;color:#fff;text-decoration:none;padding:9px 22px;border-radius:24px;font-weight:600}footer{text-align:center;color:#7a5a68;font-size:13px;padding:18px}
+.c{background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.im{aspect-ratio:1;background:linear-gradient(135deg,#f8c9d8,#e9a3bd);display:flex;align-items:center;justify-content:center;font-size:42px;color:#fff}.im img{width:100%;height:100%;object-fit:cover}
+.t{position:absolute;top:8px;right:8px;background:var(--g);color:#fff;font-size:12px;padding:1px 10px;border-radius:10px}
+.cb{padding:10px;display:flex;flex-direction:column;gap:4px;flex:1}.cb h3{font-size:15px;line-height:1.4}.cb small{color:#7a5a68}
+.pr{font-weight:800;color:var(--r);font-size:18px}.pr s{color:#999;font-weight:400;font-size:13px;margin-inline-start:6px}
+.ac{display:flex;gap:6px;margin-top:auto;padding-top:6px}.ac button{flex:1;padding:7px 4px;border-radius:8px;font-size:14px}
+.a1{background:var(--r);color:#fff}.a2{background:#e7f8ee;color:#126b3a}.a3{background:#f4e4ea;color:var(--p);flex:0 0 36px!important}button:disabled{opacity:.45}
+.info{background:#fff;border-radius:14px;padding:16px;margin-top:22px}.info h2{font-size:19px;color:var(--p)}
+#fab{position:fixed;bottom:14px;inset-inline:14px;background:var(--p);color:#fff;padding:13px;border-radius:30px;font-weight:600;display:none;z-index:6}
+#dr{position:fixed;inset:0;background:#0007;display:none;z-index:9}#dr>div{background:#fff;position:absolute;bottom:0;inset-inline:0;max-height:85vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px;max-width:600px;margin:auto}
+.ro{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #eee}.ro span{flex:1}.ro button{width:30px;height:30px;border-radius:50%;background:#f4e4ea}
+.sd{width:100%;background:#25a35a;color:#fff;padding:12px;border-radius:12px;margin-top:12px;font-weight:600}
+</style></head><body>
+<div class="bar" id="an"></div>
+<header><h1 id="nm">يابلاش</h1><p>إكسسوارات · مكياج · عطور · هدايا · لانجري · أدوات كهربائية</p><p id="hh" style="margin-top:6px"></p><a class="wb" id="wb" target="_blank" rel="noopener">راسلنا عبر واتساب</a></header>
+<div class="top"><input type="search" id="q" placeholder="ابحث عن منتج"><div class="chips" id="ch"></div></div>
+<main><div id="grid"></div>
+<div class="info"><h2>التوصيل</h2><p id="dl"></p></div>
+<div class="info"><h2>زورونا</h2><p id="ad"></p><p id="hr"></p><p><a id="ig" target="_blank" rel="noopener">إنستغرام</a></p></div></main><footer id="ft"></footer>
+<button id="fab" onclick="dr.style.display='block';rc()"></button>
+<div id="dr" onclick="if(event.target==dr)dr.style.display='none'"><div><h2>سلة الطلب</h2><div id="ci"></div><p id="tt"></p><button class="sd" onclick="send()">ابعت طلبك عبر واتساب</button></div></div>
+<script>
+let D,cart=JSON.parse(localStorage.yc||'{}'),cat='all',hid=location.hash.startsWith('#p-')?location.hash.slice(3):'';
+const $=s=>document.querySelector(s),e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+fetch('products.json?'+Date.now()).then(r=>r.json()).then(d=>{D=d;init()}).catch(()=>$('#grid').textContent='تعذر تحميل المنتجات، حدّث الصفحة.');
+function init(){const s=D.shop;document.title=s.name;$('#nm').textContent=s.name;$('#an').textContent=s.announcement;$('#an').hidden=!s.announcement;$('#dl').textContent=s.delivery;$('#ad').textContent='📍 '+s.address;$('#hr').textContent='🕙 '+s.hours;$('#hh').textContent='🕙 '+s.hours;$('#wb').href='https://wa.me/'+s.whatsapp;$('#ft').textContent='© '+s.name;$('#ig').href='https://instagram.com/'+s.instagram;
+D.products=D.products.filter(p=>!p.hidden);cart=Object.fromEntries(Object.entries(cart).filter(([k])=>D.products.some(p=>p.id==k)));$('#q').oninput=draw;draw()}
+const EM={'مكياج':'💄','عطور':'🧴','إكسسوارات':'💍','هدايا':'🎁','لانجري':'👙','أدوات كهربائية':'🔌'};
+const card=p=>`<div class="c"><div class="im">${p.img?`<img src="${e(p.img)}" alt="${e(p.name)}" loading="lazy">`:(EM[p.cat]||'✦')}</div>${p.out?'<span class="t" style="background:#777">نفد</span>':p.new?'<span class="t">جديد</span>':''}<div class="cb"><h3>${e(p.name)}</h3><small>${e(p.desc)}</small><div class="pr">$${p.price}${p.old>p.price?`<s>$${p.old}</s>`:''}</div><div class="ac"><button class="a1" ${p.out?'disabled':''} onclick="add('${p.id}')">أضف للسلة</button><button class="a2" ${p.out?'disabled':''} onclick="one('${p.id}')">اطلب</button><button class="a3" aria-label="نسخ الرابط" onclick="sh('${p.id}')">🔗</button></div></div></div>`;
+function draw(){let L=[['all','الكل'],['off','عروض'],...D.categories.map(c=>[c,c])];$('#ch').innerHTML=L.map(([k,n])=>`<button class="${k==cat?'on':''}" onclick="cat='${e(k)}';hid='';draw()">${e(n)}</button>`).join('');
+const q=$('#q').value.trim();let P=D.products.filter(p=>hid?p.id==hid:(cat=='all'||(cat=='off'?p.old>p.price:p.cat==cat))&&(!q||(p.name+p.desc).includes(q))).sort((a,b)=>!!b.pin-!!a.pin),h;
+if(!hid&&cat=='all'&&!q)h=D.categories.map(c=>{const X=P.filter(p=>p.cat==c);return X.length?`<h2 class="sec">${EM[c]||''} ${e(c)}</h2><div class="gr">${X.map(card).join('')}</div>`:''}).join('');
+else h=(hid?'<p><button class="a3" style="padding:6px 14px;border-radius:8px" onclick="hid=\'\';history.replaceState(0,0,location.pathname);draw()">عرض كل المنتجات</button></p>':'')+(P.length?'<div class="gr">'+P.map(card).join('')+'</div>':'');
+$('#grid').innerHTML=h||'<p>لا توجد منتجات مطابقة.</p>';fab()}
+const n=()=>Object.values(cart).reduce((a,b)=>a+b,0),pf=id=>D.products.find(p=>p.id==id),wa=t=>open('https://wa.me/'+D.shop.whatsapp+'?text='+encodeURIComponent(t));
+function save(){localStorage.yc=JSON.stringify(cart);fab();rc()}
+function fab(){$('#fab').style.display=n()?'block':'none';$('#fab').textContent='سلة الطلب ('+n()+')'}
+function add(i){cart[i]=(cart[i]||0)+1;save()}
+function rc(){let t=0;$('#ci').innerHTML=Object.entries(cart).map(([i,c])=>{const p=pf(i);t+=p.price*c;return`<div class="ro"><span>${e(p.name)} · $${p.price}</span><button onclick="cart['${i}']--;if(!cart['${i}'])delete cart['${i}'];save()">−</button><b>${c}</b><button onclick="add('${i}')">+</button></div>`}).join('')||'<p>السلة فارغة.</p>';$('#tt').textContent=n()?'المجموع التقريبي للمنتجات: $'+t:'';if(!n())dr.style.display='none'}
+function send(){let t=0,L=Object.entries(cart).map(([i,c])=>{const p=pf(i);t+=p.price*c;return`- ${p.name} × ${c} (${p.price}$)`});wa(`مرحباً ${D.shop.name}، بدي أطلب:\n${L.join('\n')}\nالمجموع التقريبي: ${t}$\nأجرة التوصيل تُحدد معكم.`)}
+function one(i){const p=pf(i);wa(`مرحباً ${D.shop.name}، بدي أطلب: ${p.name} (${p.price}$)`)}
+function sh(i){const u=location.href.split('#')[0]+'#p-'+i;navigator.clipboard?.writeText(u).then(()=>alert('تم نسخ الرابط'),()=>prompt('انسخ الرابط',u))}
+</script></body></html>
