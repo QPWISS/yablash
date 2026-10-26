@@ -1,39 +1,51 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>لوحة الإدارة</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap">
 <style>
-body{margin:0;font:16px/1.6 Cairo,Tahoma,sans-serif;background:#FFF1F5;color:#2A1A24;padding:14px;max-width:700px;margin:auto}
-h1{color:#3B1230}section{background:#fff;border-radius:14px;padding:14px;margin:12px 0}label{display:block;margin-top:8px;font-weight:600}
-input,select,textarea{width:100%;padding:9px;border:1px solid #e3b9c9;border-radius:8px;font:inherit;background:#fff}input[type=checkbox]{width:auto}
-button{font:inherit;padding:9px 14px;border:0;border-radius:8px;background:#D93A73;color:#fff;cursor:pointer;margin:6px 4px 0 0}.g{background:#f4e4ea;color:#3B1230}.dl{background:#25a35a}
-.row{display:flex;align-items:center;gap:10px;border-bottom:1px solid #eee;padding:8px 0}.row img,.row i{width:48px;height:48px;border-radius:8px;object-fit:cover;background:#f8c9d8;flex:none}.row span{flex:1}
-#msg{position:sticky;top:0;background:#fff7d6;padding:8px;border-radius:8px;display:none}
+body{margin:0 auto;font:16px/1.6 Cairo,Tahoma,sans-serif;background:#FBF4EC;color:#3A2430;padding:14px;max-width:700px}h1{color:#5A1F3B}
+section,details{background:#fff;border-radius:14px;padding:14px;margin:12px 0;border:1px solid #EBD5C3}summary{font-weight:700;cursor:pointer}label{display:block;margin-top:8px;font-weight:600}
+input,select,textarea{width:100%;padding:9px;border:1px solid #dcc3b0;border-radius:8px;font:inherit;background:#fff}input[type=checkbox]{width:auto}
+button{font:inherit;padding:8px 14px;border:0;border-radius:8px;background:#B83A62;color:#fff;cursor:pointer;margin:6px 4px 0 0}.g{background:#f4e6dc;color:#5A1F3B}.dl{background:#25a35a}
+.row{display:flex;align-items:center;gap:8px;border-bottom:1px solid #eee;padding:8px 0}.row img,.row i{width:46px;height:46px;border-radius:8px;object-fit:cover;background:#EFC3D0;flex:none}.row span{flex:1}.row input[type=checkbox]{width:18px;height:18px}
 </style></head><body><h1>لوحة إدارة المنتجات</h1>
-<div id="msg">التعديلات محفوظة في متصفحك فقط. نزّل الملف وارفعه على GitHub حتى تظهر في الموقع.</div>
-<section><button class="dl" onclick="dl()">تنزيل products.json</button><button class="g" onclick="f.click()">استيراد products.json</button><input type="file" id="f" accept=".json" hidden></section>
+<section><button class="dl" onclick="dl()">تنزيل products.json</button><button class="g" onclick="bk()">نسخة احتياطية</button><button class="g" onclick="f.click()">استيراد ملف</button><input type="file" id="f" accept=".json" hidden>
+<p id="sz"></p><small>التعديلات تُحفظ في متصفحك فقط. نزّل products.json وارفعه على GitHub لتظهر في الموقع.</small></section>
 <section><h2 id="ft">إضافة منتج</h2>
-<label>الاسم<input id="n"></label><label>السعر بالدولار<input id="p" type="number" step="0.01"></label><label>السعر قبل الخصم (اختياري)<input id="o" type="number" step="0.01"></label>
-<label>القسم<select id="c"></select></label><label>الوصف<textarea id="d" rows="2"></textarea></label>
-<label>الصورة<input id="im" type="file" accept="image/*"></label><img id="pv" style="max-width:100px;display:none">
+<label>الاسم *<input id="n"></label><label>السعر بالدولار *<input id="p" type="number" step="0.01" min="0"></label><label>القسم *<select id="c"></select></label>
+<label>الصورة *<input id="im" type="file" accept="image/*"></label><img id="pv" style="max-width:100px;display:none">
+<label>الوصف (اختياري)<textarea id="d" rows="2"></textarea></label><label>السعر قبل الخصم (اختياري)<input id="o" type="number" step="0.01" min="0"></label>
 <label><input type="checkbox" id="nw"> جديد</label><label><input type="checkbox" id="ou"> نفد</label><label><input type="checkbox" id="hi"> مخفي</label><label><input type="checkbox" id="pi"> تثبيت في أول القسم</label>
 <button onclick="sv()">حفظ المنتج</button><button class="g" onclick="rs()">إلغاء</button></section>
-<section><h2>المنتجات</h2><input id="s" placeholder="بحث" oninput="ls()"><div id="l"></div></section>
-<section><h2>الأقسام (قسم في كل سطر)</h2><textarea id="cs" rows="6" onchange="D.categories=this.value.split('\n').map(x=>x.trim()).filter(Boolean);w()"></textarea><small>إذا غيّرت اسم قسم، عدّل قسم منتجاته أيضاً.</small></section>
-<section><h2>معلومات المحل</h2><div id="sh"></div></section>
+<section><h2>المنتجات</h2><input id="s" placeholder="بحث" oninput="ls()"><div id="l"></div>
+<label>نقل المنتجات المحددة إلى<select id="bm"></select></label><button onclick="bmv()">نقل</button></section>
+<section><h2>الأقسام</h2><div id="cl"></div><label>قسم جديد<input id="cn"></label><button onclick="ac()">إضافة قسم</button></section>
+<details><summary>إعدادات المركز (اختيارية)</summary><div id="sh"></div></details>
 <script>
 const $=s=>document.querySelector(s),e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const K={name:'اسم المحل',whatsapp:'رقم واتساب (بدون +)',hours:'أوقات الدوام',address:'العنوان',instagram:'حساب إنستغرام',announcement:'إعلان أعلى الصفحة',delivery:'نص التوصيل'};
-let D,ed=null,img='';
+const K={name:'اسم المركز',whatsapp:'رقم واتساب (بدون +)',hours:'أوقات الدوام (نص يظهر للزبون)',open:'ساعة الافتتاح (0 إلى 24)',close:'ساعة الإغلاق (0 إلى 24)',address:'العنوان',instagram:'حساب إنستغرام',announcement:'إعلان أعلى الصفحة'};
+let D,ed=null,img='',dirty=0;
 try{D=JSON.parse(localStorage.yd)}catch(x){}
-if(!D)fetch('products.json').then(r=>r.json()).then(d=>{D=d;go()}).catch(()=>{D={shop:{},categories:[],products:[]};go()});else go();
-function go(){$('#sh').innerHTML=Object.entries(K).map(([k,v])=>`<label>${v}<input data-k="${k}" value="${e(D.shop[k])}" onchange="D.shop[this.dataset.k]=this.value;w()"></label>`).join('');cs.value=D.categories.join('\n');rs();ls()}
-function w(){localStorage.yd=JSON.stringify(D);msg.style.display='block';$('#c').innerHTML=D.categories.map(c=>`<option>${e(c)}</option>`).join('');ls()}
-function ls(){const q=$('#s').value;$('#l').innerHTML=D.products.filter(p=>!q||p.name.includes(q)).map(p=>`<div class="row">${p.img?`<img src="${e(p.img)}">`:'<i></i>'}<span>${e(p.name)} · $${p.price}${p.out?' (نفد)':''}${p.hidden?' (مخفي)':''}</span><button class="g" onclick="edt('${p.id}')">تعديل</button><button class="g" onclick="del('${p.id}')">حذف</button></div>`).join('')||'<p>لا توجد منتجات.</p>'}
-function rs(){ed=null;img='';ft.textContent='إضافة منتج';['n','p','o','d'].forEach(i=>$('#'+i).value='');im.value='';pv.style.display='none';['nw','ou','hi','pi'].forEach(i=>$('#'+i).checked=false);$('#c').innerHTML=D.categories.map(c=>`<option>${e(c)}</option>`).join('')}
-function edt(i){const p=D.products.find(x=>x.id==i);ed=i;img=p.img||'';ft.textContent='تعديل منتج';n.value=p.name;$('#p').value=p.price;o.value=p.old||'';c.value=p.cat;d.value=p.desc||'';nw.checked=!!p.new;ou.checked=!!p.out;hi.checked=!!p.hidden;pi.checked=!!p.pin;pv.src=img;pv.style.display=img?'block':'none';scrollTo(0,0)}
+if(D)go();else fetch('products.json').then(r=>r.json()).then(d=>{D=d;go()}).catch(()=>{D={shop:{},categories:[],products:[]};go()});
+onbeforeunload=v=>{if(dirty){v.preventDefault();return v.returnValue=''}};
+function go(){$('#sh').innerHTML=Object.entries(K).map(([k,v])=>`<label>${v}<input data-k="${k}" value="${e(D.shop[k])}" onchange="D.shop[this.dataset.k]=['open','close'].includes(this.dataset.k)?(this.value===''?null:+this.value):this.value;w()"></label>`).join('');rs();R()}
+function w(){localStorage.yd=JSON.stringify(D);dirty=1;R()}
+function R(){const o=D.categories.map(c=>`<option>${e(c)}</option>`).join(''),v=c.value;c.innerHTML=o;c.value=v;bm.innerHTML=o;ls();
+cl.innerHTML=D.categories.map((x,i)=>`<div class="row"><span>${e(x)} (${D.products.filter(p=>p.cat==x).length})</span><button class="g" onclick="mv(${i},-1)">▲</button><button class="g" onclick="mv(${i},1)">▼</button><button class="g" onclick="rn(${i})">تعديل</button><button class="g" onclick="dc(${i})">حذف</button></div>`).join('')||'<p>أضف قسماً أولاً.</p>';
+const k=Math.round(new Blob([JSON.stringify(D)]).size/1024);sz.textContent='حجم الملف: '+k+' ك.ب'+(k>3000?' (كبير، يُفضّل تقليل الصور)':'')}
+function ls(){const q=$('#s').value;$('#l').innerHTML=D.products.filter(p=>!q||p.name.includes(q)).map(p=>`<div class="row"><input type="checkbox" class="ck" value="${p.id}">${p.img?`<img src="${e(p.img)}">`:'<i></i>'}<span>${e(p.name)} · $${p.price} · ${e(p.cat)}${p.out?' (نفد)':''}${p.hidden?' (مخفي)':''}</span><button class="g" onclick="edt('${p.id}')">تعديل</button><button class="g" onclick="cp('${p.id}')">نسخ</button><button class="g" onclick="del('${p.id}')">حذف</button></div>`).join('')||'<p>لا توجد منتجات.</p>'}
+function fill(p){n.value=p.name||'';$('#p').value=p.price??'';o.value=p.old||'';c.value=p.cat;d.value=p.desc||'';nw.checked=!!p.new;ou.checked=!!p.out;hi.checked=!!p.hidden;pi.checked=!!p.pin;img=p.img||'';pv.src=img;pv.style.display=img?'block':'none';im.value='';scrollTo(0,0)}
+function rs(){ed=null;ft.textContent='إضافة منتج';fill({name:'',cat:D.categories[0]})}
+function edt(i){ed=i;ft.textContent='تعديل منتج';fill(D.products.find(x=>x.id==i))}
+function cp(i){ed=null;ft.textContent='منتج جديد (نسخة)';fill({...D.products.find(x=>x.id==i),name:''})}
 function del(i){if(confirm('حذف المنتج؟')){D.products=D.products.filter(x=>x.id!=i);w()}}
-function sv(){if(!n.value.trim()||!$('#p').value)return alert('اكتب اسم المنتج وسعره');const p={id:ed||String(Date.now()),name:n.value.trim(),price:+$('#p').value,old:+o.value||0,cat:c.value,desc:d.value.trim(),img,new:nw.checked,out:ou.checked,hidden:hi.checked,pin:pi.checked};
-const k=D.products.findIndex(x=>x.id==ed);k>=0?D.products[k]=p:D.products.unshift(p);w();rs()}
-im.onchange=()=>{const f=im.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const t=new Image();t.onload=()=>{const s=Math.min(1,700/Math.max(t.width,t.height)),k=document.createElement('canvas');k.width=t.width*s;k.height=t.height*s;k.getContext('2d').drawImage(t,0,0,k.width,k.height);img=k.toDataURL('image/jpeg',.72);pv.src=img;pv.style.display='block'};t.src=r.result};r.readAsDataURL(f)}
-f.onchange=()=>{const r=new FileReader();r.onload=()=>{try{D=JSON.parse(r.result);w();go()}catch(x){alert('الملف غير صالح')}};r.readAsText(f.files[0])}
-function dl(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D)],{type:'application/json'}));a.download='products.json';a.click()}
+function sv(){const m=[];if(!n.value.trim())m.push('الاسم');if(!img)m.push('الصورة');if($('#p').value==='')m.push('السعر');if(!c.value)m.push('القسم (أضف قسماً أولاً)');if(m.length)return alert('أكمل الحقول التالية: '+m.join('، '));
+const p={id:ed||String(Date.now()),name:n.value.trim(),price:+$('#p').value,old:+o.value||0,cat:c.value,desc:d.value.trim(),img,new:nw.checked,out:ou.checked,hidden:hi.checked,pin:pi.checked},k=D.products.findIndex(x=>x.id==ed);k>=0?D.products[k]=p:D.products.unshift(p);w();rs()}
+function bmv(){const L=[...document.querySelectorAll('.ck:checked')].map(x=>x.value);if(!L.length)return alert('حدد منتجات أولاً');D.products.forEach(p=>{if(L.includes(p.id))p.cat=bm.value});w()}
+function ac(){const v=cn.value.trim();if(!v||D.categories.includes(v))return alert('اكتب اسماً غير مكرر');D.categories.push(v);cn.value='';w()}
+function mv(i,s){const j=i+s;if(j<0||j>=D.categories.length)return;[D.categories[i],D.categories[j]]=[D.categories[j],D.categories[i]];w()}
+function rn(i){const v=(prompt('الاسم الجديد',D.categories[i])||'').trim();if(!v||D.categories.includes(v))return;D.products.forEach(p=>{if(p.cat==D.categories[i])p.cat=v});D.categories[i]=v;w()}
+function dc(i){const x=D.categories[i];if(D.products.some(p=>p.cat==x))return alert('هذا القسم يحتوي على منتجات. انقلها إلى قسم آخر أولاً.');if(confirm('حذف القسم؟')){D.categories.splice(i,1);w()}}
+im.onchange=()=>{const q=im.files[0];if(!q)return;const r=new FileReader();r.onload=()=>{const t=new Image();t.onload=()=>{const s=Math.min(1,700/Math.max(t.width,t.height)),k=document.createElement('canvas');k.width=t.width*s;k.height=t.height*s;k.getContext('2d').drawImage(t,0,0,k.width,k.height);img=k.toDataURL('image/jpeg',.72);pv.src=img;pv.style.display='block'};t.src=r.result};r.readAsDataURL(q)};
+f.onchange=()=>{const r=new FileReader();r.onload=()=>{try{D=JSON.parse(r.result);if(!D.products||!D.categories)throw 0;localStorage.yd=JSON.stringify(D);go()}catch(x){alert('الملف غير صالح')}};r.readAsText(f.files[0])};
+function out(nm){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D)],{type:'application/json'}));a.download=nm;a.click()}
+function dl(){out('products.json');dirty=0}function bk(){out('backup.json')}
 </script></body></html>
