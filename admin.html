@@ -10,9 +10,9 @@ button{font:inherit;padding:8px 14px;border:0;border-radius:8px;background:#B83A
 <section><button class="dl" onclick="dl()">تنزيل products.json</button><button class="g" onclick="bk()">نسخة احتياطية</button><button class="g" onclick="f.click()">استيراد ملف</button><input type="file" id="f" accept=".json" hidden>
 <p id="sz"></p><small>التعديلات تُحفظ في متصفحك فقط. نزّل products.json وارفعه على GitHub لتظهر في الموقع.</small></section>
 <section><h2 id="ft">إضافة منتج</h2>
-<label>الاسم *<input id="n"></label><label>السعر بالدولار *<input id="p" type="number" step="0.01" min="0"></label><label>القسم *<select id="c"></select></label>
+<label>الاسم *<input id="n"></label><label><input type="checkbox" id="ofr" onchange="tg()"> عرض (يظهر في قسم العروض بسعرين)</label><div id="ob" hidden><label>السعر قبل العرض *<input id="o" type="number" step="0.01" min="0"></label><label>السعر بعد العرض *<input id="p" type="number" step="0.01" min="0"></label></div><div id="nb"><label>السعر العادي (اختياري، يظهر فقط إذا فعّلت إظهار الأسعار)<input id="np" type="number" step="0.01" min="0"></label></div><label>القسم *<select id="c"></select></label>
 <label>الصورة *<input id="im" type="file" accept="image/*"></label><img id="pv" style="max-width:100px;display:none">
-<label>الوصف (اختياري)<textarea id="d" rows="2"></textarea></label><label>السعر قبل الخصم (اختياري)<input id="o" type="number" step="0.01" min="0"></label>
+<label>الوصف (اختياري)<textarea id="d" rows="2"></textarea></label>
 <label><input type="checkbox" id="nw"> جديد</label><label><input type="checkbox" id="ou"> نفد</label><label><input type="checkbox" id="hi"> مخفي</label><label><input type="checkbox" id="pi"> تثبيت في أول القسم</label>
 <button onclick="sv()">حفظ المنتج</button><button class="g" onclick="rs()">إلغاء</button></section>
 <section><h2>المنتجات</h2><input id="s" placeholder="بحث" oninput="ls()"><div id="l"></div>
@@ -26,19 +26,20 @@ let D,ed=null,img='',dirty=0;
 try{D=JSON.parse(localStorage.yd)}catch(x){}
 if(D)go();else fetch('products.json').then(r=>r.json()).then(d=>{D=d;go()}).catch(()=>{D={shop:{},categories:[],products:[]};go()});
 onbeforeunload=v=>{if(dirty){v.preventDefault();return v.returnValue=''}};
-function go(){$('#sh').innerHTML=Object.entries(K).map(([k,v])=>`<label>${v}<input data-k="${k}" value="${e(D.shop[k])}" onchange="D.shop[this.dataset.k]=['open','close'].includes(this.dataset.k)?(this.value===''?null:+this.value):this.value;w()"></label>`).join('');rs();R()}
+function go(){$('#sh').innerHTML='<label><input type="checkbox" '+(D.shop.showPrices?'checked':'')+' onchange="D.shop.showPrices=this.checked;w()"> إظهار الأسعار على كل المنتجات</label>'+Object.entries(K).map(([k,v])=>`<label>${v}<input data-k="${k}" value="${e(D.shop[k])}" onchange="D.shop[this.dataset.k]=['open','close'].includes(this.dataset.k)?(this.value===''?null:+this.value):this.value;w()"></label>`).join('');rs();R()}
 function w(){localStorage.yd=JSON.stringify(D);dirty=1;R()}
 function R(){const o=D.categories.map(c=>`<option>${e(c)}</option>`).join(''),v=c.value;c.innerHTML=o;c.value=v;bm.innerHTML=o;ls();
 cl.innerHTML=D.categories.map((x,i)=>`<div class="row"><span>${e(x)} (${D.products.filter(p=>p.cat==x).length})</span><button class="g" onclick="mv(${i},-1)">▲</button><button class="g" onclick="mv(${i},1)">▼</button><button class="g" onclick="rn(${i})">تعديل</button><button class="g" onclick="dc(${i})">حذف</button></div>`).join('')||'<p>أضف قسماً أولاً.</p>';
 const k=Math.round(new Blob([JSON.stringify(D)]).size/1024);sz.textContent='حجم الملف: '+k+' ك.ب'+(k>3000?' (كبير، يُفضّل تقليل الصور)':'')}
-function ls(){const q=$('#s').value;$('#l').innerHTML=D.products.filter(p=>!q||p.name.includes(q)).map(p=>`<div class="row"><input type="checkbox" class="ck" value="${p.id}">${p.img?`<img src="${e(p.img)}">`:'<i></i>'}<span>${e(p.name)} · $${p.price} · ${e(p.cat)}${p.out?' (نفد)':''}${p.hidden?' (مخفي)':''}</span><button class="g" onclick="edt('${p.id}')">تعديل</button><button class="g" onclick="cp('${p.id}')">نسخ</button><button class="g" onclick="del('${p.id}')">حذف</button></div>`).join('')||'<p>لا توجد منتجات.</p>'}
-function fill(p){n.value=p.name||'';$('#p').value=p.price??'';o.value=p.old||'';c.value=p.cat;d.value=p.desc||'';nw.checked=!!p.new;ou.checked=!!p.out;hi.checked=!!p.hidden;pi.checked=!!p.pin;img=p.img||'';pv.src=img;pv.style.display=img?'block':'none';im.value='';scrollTo(0,0)}
+function ls(){const q=$('#s').value;$('#l').innerHTML=D.products.filter(p=>!q||p.name.includes(q)).map(p=>`<div class="row"><input type="checkbox" class="ck" value="${p.id}">${p.img?`<img src="${e(p.img)}">`:'<i></i>'}<span>${e(p.name)}${p.offer?' · عرض $'+p.price:''} · ${e(p.cat)}${p.out?' (نفد)':''}${p.hidden?' (مخفي)':''}</span><button class="g" onclick="edt('${p.id}')">تعديل</button><button class="g" onclick="cp('${p.id}')">نسخ</button><button class="g" onclick="del('${p.id}')">حذف</button></div>`).join('')||'<p>لا توجد منتجات.</p>'}
+function fill(p){n.value=p.name||'';$('#p').value=p.offer?p.price:'';o.value=p.offer?p.old:'';np.value=p.offer?'':(p.price||'');ofr.checked=!!p.offer;tg();c.value=p.cat;d.value=p.desc||'';nw.checked=!!p.new;ou.checked=!!p.out;hi.checked=!!p.hidden;pi.checked=!!p.pin;img=p.img||'';pv.src=img;pv.style.display=img?'block':'none';im.value='';scrollTo(0,0)}
+function tg(){ob.hidden=!ofr.checked;nb.hidden=ofr.checked}
 function rs(){ed=null;ft.textContent='إضافة منتج';fill({name:'',cat:D.categories[0]})}
 function edt(i){ed=i;ft.textContent='تعديل منتج';fill(D.products.find(x=>x.id==i))}
 function cp(i){ed=null;ft.textContent='منتج جديد (نسخة)';fill({...D.products.find(x=>x.id==i),name:''})}
 function del(i){if(confirm('حذف المنتج؟')){D.products=D.products.filter(x=>x.id!=i);w()}}
-function sv(){const m=[];if(!n.value.trim())m.push('الاسم');if(!img)m.push('الصورة');if($('#p').value==='')m.push('السعر');if(!c.value)m.push('القسم (أضف قسماً أولاً)');if(m.length)return alert('أكمل الحقول التالية: '+m.join('، '));
-const p={id:ed||String(Date.now()),name:n.value.trim(),price:+$('#p').value,old:+o.value||0,cat:c.value,desc:d.value.trim(),img,new:nw.checked,out:ou.checked,hidden:hi.checked,pin:pi.checked},k=D.products.findIndex(x=>x.id==ed);k>=0?D.products[k]=p:D.products.unshift(p);w();rs()}
+function sv(){const m=[];if(!n.value.trim())m.push('الاسم');if(!img)m.push('الصورة');if(ofr.checked){if(!o.value||!$('#p').value)m.push('السعر قبل العرض وبعده');else if(+$('#p').value>=+o.value)m.push('سعر العرض يجب أن يكون أقل من السعر قبله')}if(!c.value)m.push('القسم (أضف قسماً أولاً)');if(m.length)return alert('أكمل الحقول التالية: '+m.join('، '));
+const p={id:ed||String(Date.now()),name:n.value.trim(),offer:ofr.checked,price:ofr.checked?+$('#p').value:+np.value||0,old:ofr.checked?+o.value:0,cat:c.value,desc:d.value.trim(),img,new:nw.checked,out:ou.checked,hidden:hi.checked,pin:pi.checked},k=D.products.findIndex(x=>x.id==ed);k>=0?D.products[k]=p:D.products.unshift(p);w();rs()}
 function bmv(){const L=[...document.querySelectorAll('.ck:checked')].map(x=>x.value);if(!L.length)return alert('حدد منتجات أولاً');D.products.forEach(p=>{if(L.includes(p.id))p.cat=bm.value});w()}
 function ac(){const v=cn.value.trim();if(!v||D.categories.includes(v))return alert('اكتب اسماً غير مكرر');D.categories.push(v);cn.value='';w()}
 function mv(i,s){const j=i+s;if(j<0||j>=D.categories.length)return;[D.categories[i],D.categories[j]]=[D.categories[j],D.categories[i]];w()}

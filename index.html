@@ -32,10 +32,10 @@ main{max-width:1000px;margin:auto;padding:14px}.gr{display:grid;grid-template-co
 <div class="bar" id="an"></div>
 <header><h1 id="nm">يابلاش</h1><p>إكسسوارات · مكياج · عطور · هدايا · لانجري · أدوات كهربائية</p><span class="bd" id="bd" hidden></span><br><a class="wb" id="wb" target="_blank" rel="noopener">تواصل عبر واتساب</a></header>
 <div class="dv">🚚 التوصيل متوفر</div>
-<div class="top"><div class="sr"><input type="search" id="q" placeholder="ابحث عن منتج"><select id="so" aria-label="الترتيب"><option value="d">الترتيب</option><option value="n">الأحدث</option><option value="l">الأرخص</option><option value="h">الأغلى</option></select></div><div class="chips" id="ch"></div></div>
+<div class="top"><div class="sr"><input type="search" id="q" placeholder="ابحث عن منتج"><select id="so" aria-label="الترتيب"><option value="d">الترتيب</option><option value="n">الأحدث</option></select></div><div class="chips" id="ch"></div></div>
 <main><div id="grid"></div><div class="info" id="inf"></div></main><footer id="ft"></footer>
 <button id="fab" onclick="dr.style.display='block';rc()"></button>
-<div id="dr" onclick="if(event.target==dr)dr.style.display='none'"><div><h2>سلة الطلب</h2><div id="ci"></div><p id="tt"></p><button class="sd" onclick="send()">أرسل طلبك عبر واتساب</button></div></div>
+<div id="dr" onclick="if(event.target==dr)dr.style.display='none'"><div><h2>سلة الطلب</h2><div id="ci"></div><button class="sd" onclick="send()">أرسل طلبك عبر واتساب</button></div></div>
 <script>
 let D,cart=JSON.parse(localStorage.yc||'{}'),cat='all',hid=location.hash.startsWith('#p-')?location.hash.slice(3):'';
 const $=s=>document.querySelector(s),e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -45,11 +45,12 @@ function init(){const s=D.shop;document.title=s.name;$('#nm').textContent=s.name
 $('#wb').hidden=!s.whatsapp;$('#wb').href='https://wa.me/'+s.whatsapp;
 if(s.open!=null&&s.close!=null){const h=+new Intl.DateTimeFormat('en',{hour:'numeric',hour12:false,timeZone:'Asia/Damascus'}).format(new Date())%24,o=h>=s.open&&h<s.close;$('#bd').hidden=0;$('#bd').className='bd '+(o?'o':'x');$('#bd').textContent=o?'● مفتوح الآن':'● مغلق الآن'}
 $('#inf').innerHTML='<h2>معلومات المركز</h2><p>🚚 التوصيل متوفر.</p>'+(s.address?`<p>📍 ${e(s.address)}</p>`:'')+(s.hours?`<p>🕙 ${e(s.hours)}</p>`:'')+(s.instagram?`<p><a href="https://instagram.com/${e(s.instagram)}" target="_blank" rel="noopener">تابعونا على إنستغرام</a></p>`:'');
-D.products=D.products.filter(p=>!p.hidden);cart=Object.fromEntries(Object.entries(cart).filter(([k])=>D.products.some(p=>p.id==k)));$('#q').oninput=$('#so').onchange=draw;draw()}
-const card=p=>`<div class="c"><div class="im">${p.img?`<img src="${e(p.img)}" alt="${e(p.name)}" loading="lazy">`:(EM[p.cat]||'✦')}</div>${p.out?'<span class="t" style="background:#777">نفد</span>':p.new?'<span class="t">جديد</span>':''}<div class="cb"><h3>${e(p.name)}</h3><small>${e(p.desc)}</small><div class="pr">$${p.price}${p.old>p.price?`<s>$${p.old}</s>`:''}</div><div class="ac"><button class="a1" ${p.out?'disabled':''} onclick="add('${p.id}')">أضف للسلة</button><button class="a2" ${p.out?'disabled':''} onclick="one('${p.id}')">اطلب الآن</button><button class="a3" aria-label="نسخ الرابط" onclick="sh('${p.id}')">🔗</button></div></div></div>`;
+D.products=D.products.filter(p=>!p.hidden);D.products.forEach(p=>{if(p.offer==null&&p.old>p.price)p.offer=true});cart=Object.fromEntries(Object.entries(cart).filter(([k])=>D.products.some(p=>p.id==k)));$('#q').oninput=$('#so').onchange=draw;draw()}
+const pr=p=>p.offer?`<div class="pr">$${p.price}<s>$${p.old}</s></div>`:(D.shop.showPrices&&p.price?`<div class="pr">$${p.price}</div>`:'');
+const card=p=>`<div class="c"><div class="im">${p.img?`<img src="${e(p.img)}" alt="${e(p.name)}" loading="lazy">`:(EM[p.cat]||'✦')}</div>${p.out?'<span class="t" style="background:#777">نفد</span>':p.new?'<span class="t">جديد</span>':''}<div class="cb"><h3>${e(p.name)}</h3><small>${e(p.desc)}</small>${pr(p)}<div class="ac"><button class="a1" ${p.out?'disabled':''} onclick="add('${p.id}')">أضف للسلة</button><button class="a2" ${p.out?'disabled':''} onclick="one('${p.id}')">اطلب الآن</button><button class="a3" aria-label="نسخ الرابط" onclick="sh('${p.id}')">🔗</button></div></div></div>`;
 function draw(){$('#ch').innerHTML=[['all','الكل'],['off','العروض'],...D.categories.map(c=>[c,c])].map(([k,n])=>`<button class="${k==cat?'on':''}" onclick="cat='${e(k)}';hid='';draw()">${e(n)}</button>`).join('');
-const q=$('#q').value.trim(),S={d:()=>0,n:(a,b)=>b.id-a.id,l:(a,b)=>a.price-b.price,h:(a,b)=>b.price-a.price}[$('#so').value];
-let P=D.products.filter(p=>hid?p.id==hid:(cat=='all'||(cat=='off'?p.old>p.price:p.cat==cat))&&(!q||(p.name+(p.desc||'')).includes(q))).sort((a,b)=>(!!a.out-!!b.out)||(!!b.pin-!!a.pin)||S(a,b)),h;
+const q=$('#q').value.trim(),S={d:()=>0,n:(a,b)=>b.id-a.id}[$('#so').value];
+let P=D.products.filter(p=>hid?p.id==hid:(cat=='all'||(cat=='off'?p.offer:p.cat==cat))&&(!q||(p.name+(p.desc||'')).includes(q))).sort((a,b)=>(!!a.out-!!b.out)||(!!b.pin-!!a.pin)||S(a,b)),h;
 if(!hid&&cat=='all'&&!q)h=D.categories.map(c=>{const X=P.filter(p=>p.cat==c);return X.length?`<h2 class="sec">${EM[c]||''} ${e(c)}</h2><div class="gr">${X.map(card).join('')}</div>`:''}).join('');
 else h=(hid?'<p style="margin-bottom:10px"><button class="a3" style="padding:6px 14px;border-radius:8px" onclick="hid=\'\';history.replaceState(0,0,location.pathname);draw()">عرض كل المنتجات</button></p>':'')+(P.length?'<div class="gr">'+P.map(card).join('')+'</div>':'');
 $('#grid').innerHTML=h||'<p>لا توجد منتجات مطابقة.</p>';fab()}
@@ -57,8 +58,9 @@ const n=()=>Object.values(cart).reduce((a,b)=>a+b,0),pf=id=>D.products.find(p=>p
 function save(){localStorage.yc=JSON.stringify(cart);fab();rc()}
 function fab(){$('#fab').style.display=n()?'block':'none';$('#fab').textContent='سلة الطلب ('+n()+')'}
 function add(i){cart[i]=(cart[i]||0)+1;save()}
-function rc(){let t=0;$('#ci').innerHTML=Object.entries(cart).map(([i,c])=>{const p=pf(i);t+=p.price*c;return`<div class="ro"><span>${e(p.name)} · $${p.price}</span><button onclick="cart['${i}']--;if(!cart['${i}'])delete cart['${i}'];save()">−</button><b>${c}</b><button onclick="add('${i}')">+</button></div>`}).join('')||'<p>السلة فارغة.</p>';$('#tt').textContent=n()?'المجموع التقريبي للمنتجات: $'+t:'';if(!n())dr.style.display='none'}
-function send(){let t=0,L=Object.entries(cart).map(([i,c])=>{const p=pf(i);t+=p.price*c;return`- ${p.name} × ${c} (${p.price}$)`});wa(`السلام عليكم، بدي أطلب:\n${L.join('\n')}\nالمجموع التقريبي: ${t}$`)}
-function one(i){const p=pf(i);wa(`السلام عليكم، بدي أطلب: ${p.name} (${p.price}$)`)}
+function rc(){$('#ci').innerHTML=Object.entries(cart).map(([i,c])=>{const p=pf(i);return`<div class="ro"><span>${e(p.name)}${p.offer?' · $'+p.price:''}</span><button onclick="cart['${i}']--;if(!cart['${i}'])delete cart['${i}'];save()">−</button><b>${c}</b><button onclick="add('${i}')">+</button></div>`}).join('')||'<p>السلة فارغة.</p>';if(!n())dr.style.display='none'}
+const ln=(p,c)=>`- ${p.name} × ${c}${p.offer?' ('+p.price+'$)':''}`;
+function send(){wa('السلام عليكم، بدي أطلب:\n'+Object.entries(cart).map(([i,c])=>ln(pf(i),c)).join('\n'))}
+function one(i){const p=pf(i);wa('السلام عليكم، بدي أطلب: '+p.name+(p.offer?` (${p.price}$)`:''))}
 function sh(i){const u=location.href.split('#')[0]+'#p-'+i;navigator.clipboard?.writeText(u).then(()=>alert('تم نسخ الرابط'),()=>prompt('انسخ الرابط',u))}
 </script></body></html>
