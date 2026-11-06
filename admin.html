@@ -1,53 +1,65 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>لوحة الإدارة</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap">
 <style>
-body{margin:0 auto;font:16px/1.6 Cairo,Tahoma,sans-serif;background:#FBF4EC;color:#3A2430;padding:14px;max-width:700px}h1{color:#5A1F3B}
-section,details{background:#fff;border-radius:14px;padding:14px;margin:12px 0;border:1px solid #EBD5C3}summary{font-weight:700;cursor:pointer}label{display:block;margin-top:8px;font-weight:600}
-input,select,textarea{width:100%;padding:9px;border:1px solid #dcc3b0;border-radius:8px;font:inherit;background:#fff}input[type=checkbox]{width:auto}
-button{font:inherit;padding:8px 14px;border:0;border-radius:8px;background:#B83A62;color:#fff;cursor:pointer;margin:6px 4px 0 0}.g{background:#f4e6dc;color:#5A1F3B}.dl{background:#25a35a}
-.row{display:flex;align-items:center;gap:8px;border-bottom:1px solid #eee;padding:8px 0}.row img,.row i{width:46px;height:46px;border-radius:8px;object-fit:cover;background:#EFC3D0;flex:none}.row span{flex:1}.row input[type=checkbox]{width:18px;height:18px}
+body{margin:0 auto;font:16px/1.6 Cairo,Tahoma,sans-serif;background:#FFF8F6;color:#4A2C36;padding:14px;max-width:700px}h1{color:#9C3B5E;margin:6px 0}h2{margin:0 0 6px;font-size:19px;color:#9C3B5E}
+section{background:#fff;border-radius:14px;padding:14px;margin:12px 0;border:1px solid #F7C9D7}label{display:block;margin-top:10px;font-weight:600}.r{color:#C2547A}.h{font-weight:400;color:#8d6b76;font-size:13px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #e3bfcb;border-radius:10px;font:inherit;background:#fff;color:#4A2C36}input[type=checkbox]{width:auto}
+button{font:inherit;padding:9px 14px;border:0;border-radius:10px;background:#C2547A;color:#fff;cursor:pointer;margin:6px 4px 0 0}.g{background:#FDEEF2;color:#9C3B5E}.dl{background:#25a35a}
+.tb{display:flex;gap:6px}.tb button{flex:1;background:#fff;color:#9C3B5E;border:1px solid #F7C9D7;margin:0}.tb .on{background:#C2547A;color:#fff}
+.row{display:flex;align-items:center;gap:8px;border-bottom:1px solid #f3e4e8;padding:8px 0}.row img,.row i{width:46px;height:46px;border-radius:8px;object-fit:cover;background:#F7C9D7;flex:none}.row span{flex:1}.row input[type=checkbox]{width:18px;height:18px}
+.fl{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}.fl label{font-weight:400;margin:4px 0}#ppv{max-width:140px;border-radius:10px;margin-top:8px;display:none}.ob{background:#FDEEF2;border-radius:10px;padding:0 10px 10px;margin-top:8px}
 </style></head><body><h1>لوحة إدارة المنتجات</h1>
-<section><button class="dl" onclick="dl()">تنزيل products.json</button><button class="g" onclick="bk()">نسخة احتياطية</button><button class="g" onclick="f.click()">استيراد ملف</button><input type="file" id="f" accept=".json" hidden>
-<p id="sz"></p><small>التعديلات تُحفظ في متصفحك فقط. نزّل products.json وارفعه على GitHub لتظهر في الموقع.</small></section>
-<section><h2 id="ft">إضافة منتج</h2>
-<label>الاسم *<input id="n"></label><label><input type="checkbox" id="ofr" onchange="tg()"> عرض (يظهر في قسم العروض بسعرين)</label><div id="ob" hidden><label>السعر قبل العرض *<input id="o" type="number" step="0.01" min="0"></label><label>السعر بعد العرض *<input id="p" type="number" step="0.01" min="0"></label></div><div id="nb"><label>السعر العادي (اختياري، يظهر فقط إذا فعّلت إظهار الأسعار)<input id="np" type="number" step="0.01" min="0"></label></div><label>القسم *<select id="c"></select></label>
-<label>الصورة *<input id="im" type="file" accept="image/*"></label><img id="pv" style="max-width:100px;display:none">
-<label>الوصف (اختياري)<textarea id="d" rows="2"></textarea></label>
-<label><input type="checkbox" id="nw"> جديد</label><label><input type="checkbox" id="ou"> نفد</label><label><input type="checkbox" id="hi"> مخفي</label><label><input type="checkbox" id="pi"> تثبيت في أول القسم</label>
+<section><button class="dl" id="b1">تنزيل products.json</button><button class="g" id="b2">نسخة احتياطية</button><button class="g" id="b3">استيراد ملف</button><input type="file" id="fi" accept=".json" hidden>
+<p id="sz" class="h"></p><p class="h">التعديلات تُحفظ في متصفحك فقط. نزّل products.json وارفعه على GitHub لتظهر في الموقع.</p></section>
+<nav class="tb"><button data-t="t1" class="on">المنتجات</button><button data-t="t2">الأقسام</button><button data-t="t3">الإعدادات</button></nav>
+<div id="t1" class="tab">
+<section><h2 id="ft">إضافة منتج</h2><p class="h">الحقول المعلّمة بـ <span class="r">*</span> إجبارية.</p>
+<label>1. الصورة <span class="r">*</span><input id="pim" type="file" accept="image/*"></label><img id="ppv" alt="">
+<label>2. الاسم <span class="r">*</span><input id="pn"></label>
+<label>3. القسم <span class="r">*</span><select id="pc"></select></label>
+<label>4. الوصف <span class="h">(اختياري)</span><textarea id="pd" rows="2"></textarea></label>
+<label><input type="checkbox" id="pof"> هذا المنتج عرض</label>
+<div class="ob" id="pob" hidden><label>السعر قبل العرض <span class="r">*</span><input id="po" type="number" step="0.01" min="0"></label><label>السعر بعد العرض <span class="r">*</span><input id="pp" type="number" step="0.01" min="0"></label></div>
+<div id="pnb"><label>السعر <span class="h">(اختياري، يظهر فقط إذا فعّلت إظهار الأسعار من الإعدادات)</span><input id="pnp" type="number" step="0.01" min="0"></label></div>
+<label>خيارات</label><div class="fl"><label><input type="checkbox" id="pnw"> جديد</label><label><input type="checkbox" id="pou"> نفد</label><label><input type="checkbox" id="phi"> مخفي</label><label><input type="checkbox" id="ppi"> تثبيت (مميز)</label></div>
 <button onclick="sv()">حفظ المنتج</button><button class="g" onclick="rs()">إلغاء</button></section>
-<section><h2>المنتجات</h2><input id="s" placeholder="بحث" oninput="ls()"><div id="l"></div>
-<label>نقل المنتجات المحددة إلى<select id="bm"></select></label><button onclick="bmv()">نقل</button></section>
-<section><h2>الأقسام</h2><div id="cl"></div><label>قسم جديد<input id="cn"></label><button onclick="ac()">إضافة قسم</button></section>
-<details><summary>إعدادات المركز (اختيارية)</summary><div id="sh"></div></details>
+<section><h2>قائمة المنتجات</h2><input id="s" placeholder="بحث بالاسم"><label>القسم<select id="ff"></select></label><div id="l"></div>
+<label>نقل المنتجات المحددة إلى<select id="bm"></select></label><button onclick="bmv()">نقل</button></section></div>
+<div id="t2" class="tab" hidden><section><h2>الأقسام</h2><div id="cl"></div><label>قسم جديد<input id="cn"></label><button onclick="ac()">إضافة قسم</button><p class="h">لا يُحذف قسم فيه منتجات؛ انقلها أولاً من تبويب المنتجات.</p></section></div>
+<div id="t3" class="tab" hidden><section><h2>إعدادات المركز <span class="h">(كلها اختيارية)</span></h2><div id="sh"></div></section></div>
 <script>
 const $=s=>document.querySelector(s),e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const K={name:'اسم المركز',whatsapp:'رقم واتساب (بدون +)',hours:'أوقات الدوام (نص يظهر للزبون)',open:'ساعة الافتتاح (0 إلى 24)',close:'ساعة الإغلاق (0 إلى 24)',address:'العنوان',instagram:'حساب إنستغرام',announcement:'إعلان أعلى الصفحة',heroTitle:'عنوان الترويسة',heroSub:'نص الترويسة'};
 let D,ed=null,img='',dirty=0;
 try{D=JSON.parse(localStorage.yd)}catch(x){}
-if(D)go();else fetch('products.json').then(r=>r.json()).then(d=>{D=d;go()}).catch(()=>{D={shop:{},categories:[],products:[]};go()});
+D?go():fetch('products.json').then(r=>r.json()).then(d=>{D=d;go()}).catch(()=>{D={shop:{},categories:[],products:[]};go()});
+document.querySelectorAll('.tb button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tb button').forEach(x=>x.classList.toggle('on',x==b));document.querySelectorAll('.tab').forEach(t=>t.hidden=t.id!=b.dataset.t)});
+b1.onclick=()=>{out('products.json');dirty=0};b2.onclick=()=>out('backup.json');b3.onclick=()=>fi.click();
 onbeforeunload=v=>{if(dirty){v.preventDefault();return v.returnValue=''}};
-function go(){$('#sh').innerHTML='<label><input type="checkbox" '+(D.shop.showPrices?'checked':'')+' onchange="D.shop.showPrices=this.checked;w()"> إظهار الأسعار على كل المنتجات</label>'+Object.entries(K).map(([k,v])=>`<label>${v}<input data-k="${k}" value="${e(D.shop[k])}" onchange="D.shop[this.dataset.k]=['open','close'].includes(this.dataset.k)?(this.value===''?null:+this.value):this.value;w()"></label>`).join('')+'<label>صورة الترويسة (اختيارية)<input type="file" accept="image/*" onchange="hero(this)"></label><button class="g" onclick="D.shop.hero=\'\';w()">إزالة الصورة</button>';rs();R()}
+function go(){D.shop=D.shop||{};$('#sh').innerHTML='<label><input type="checkbox" '+(D.shop.showPrices?'checked':'')+' onchange="D.shop.showPrices=this.checked;w()"> إظهار الأسعار على كل المنتجات</label>'+Object.entries(K).map(([k,v])=>`<label>${v}<input data-k="${k}" value="${e(D.shop[k])}" onchange="D.shop[this.dataset.k]=['open','close'].includes(this.dataset.k)?(this.value===''?null:+this.value):this.value;w()"></label>`).join('')+'<label>صورة الترويسة<input type="file" accept="image/*" onchange="hero(this)"></label><button class="g" onclick="D.shop.hero=\'\';w()">إزالة الصورة</button>';R();rs()}
 function w(){localStorage.yd=JSON.stringify(D);dirty=1;R()}
-function R(){const o=D.categories.map(c=>`<option>${e(c)}</option>`).join(''),v=c.value;c.innerHTML=o;c.value=v;bm.innerHTML=o;ls();
-cl.innerHTML=D.categories.map((x,i)=>`<div class="row"><span>${e(x)} (${D.products.filter(p=>p.cat==x).length})</span><button class="g" onclick="mv(${i},-1)">▲</button><button class="g" onclick="mv(${i},1)">▼</button><button class="g" onclick="rn(${i})">تعديل</button><button class="g" onclick="dc(${i})">حذف</button></div>`).join('')||'<p>أضف قسماً أولاً.</p>';
+function fc(){const o=D.categories.map(x=>`<option>${e(x)}</option>`).join('');[[pc,'<option value="">— اختر القسم —</option>'],[bm,'<option value="">— اختر القسم —</option>'],[ff,'<option value="">كل الأقسام</option>']].forEach(([s,h])=>{const v=s.value;s.innerHTML=h+o;s.value=v;if(s.selectedIndex<0)s.selectedIndex=0})}
+function R(){fc();ls();cl.innerHTML=D.categories.map((x,i)=>`<div class="row"><span>${e(x)} (${D.products.filter(p=>p.cat==x).length})</span><button class="g" onclick="mv(${i},-1)">▲</button><button class="g" onclick="mv(${i},1)">▼</button><button class="g" onclick="rn(${i})">تعديل</button><button class="g" onclick="dc(${i})">حذف</button></div>`).join('')||'<p>لا توجد أقسام. أضف قسماً أولاً.</p>';
 const k=Math.round(new Blob([JSON.stringify(D)]).size/1024);sz.textContent='حجم الملف: '+k+' ك.ب'+(k>3000?' (كبير، يُفضّل تقليل الصور)':'')}
-function ls(){const q=$('#s').value;$('#l').innerHTML=D.products.filter(p=>!q||p.name.includes(q)).map(p=>`<div class="row"><input type="checkbox" class="ck" value="${p.id}">${p.img?`<img src="${e(p.img)}">`:'<i></i>'}<span>${e(p.name)}${p.offer?' · عرض $'+p.price:''} · ${e(p.cat)}${p.out?' (نفد)':''}${p.hidden?' (مخفي)':''}</span><button class="g" onclick="edt('${p.id}')">تعديل</button><button class="g" onclick="cp('${p.id}')">نسخ</button><button class="g" onclick="del('${p.id}')">حذف</button></div>`).join('')||'<p>لا توجد منتجات.</p>'}
-function fill(p){n.value=p.name||'';$('#p').value=p.offer?p.price:'';o.value=p.offer?p.old:'';np.value=p.offer?'':(p.price||'');ofr.checked=!!p.offer;tg();c.value=p.cat;d.value=p.desc||'';nw.checked=!!p.new;ou.checked=!!p.out;hi.checked=!!p.hidden;pi.checked=!!p.pin;img=p.img||'';pv.src=img;pv.style.display=img?'block':'none';im.value='';scrollTo(0,0)}
-function tg(){ob.hidden=!ofr.checked;nb.hidden=ofr.checked}
-function rs(){ed=null;ft.textContent='إضافة منتج';fill({name:'',cat:D.categories[0]})}
+function ls(){const q=$('#s').value;$('#l').innerHTML=D.products.filter(p=>(!q||p.name.includes(q))&&(!ff.value||p.cat==ff.value)).map(p=>`<div class="row"><input type="checkbox" class="ck" value="${p.id}">${p.img?`<img src="${e(p.img)}">`:'<i></i>'}<span>${e(p.name)}${p.offer?' · عرض $'+p.price:''} · ${e(p.cat)}${p.out?' (نفد)':''}${p.hidden?' (مخفي)':''}</span><button class="g" onclick="edt('${p.id}')">تعديل</button><button class="g" onclick="cp('${p.id}')">نسخ</button><button class="g" onclick="del('${p.id}')">حذف</button></div>`).join('')||'<p>لا توجد منتجات.</p>'}
+$('#s').oninput=ff.onchange=ls;pof.onchange=tg;
+function tg(){pob.hidden=!pof.checked;pnb.hidden=pof.checked}
+function fill(p){pn.value=p.name||'';pc.value=p.cat||'';if(pc.selectedIndex<0)pc.value='';pd.value=p.desc||'';pof.checked=!!p.offer;po.value=p.offer?p.old:'';pp.value=p.offer?p.price:'';pnp.value=p.offer?'':(p.price||'');pnw.checked=!!p.new;pou.checked=!!p.out;phi.checked=!!p.hidden;ppi.checked=!!p.pin;img=p.img||'';ppv.src=img;ppv.style.display=img?'block':'none';pim.value='';tg();scrollTo(0,0)}
+function rs(){ed=null;ft.textContent='إضافة منتج';fill({})}
 function edt(i){ed=i;ft.textContent='تعديل منتج';fill(D.products.find(x=>x.id==i))}
 function cp(i){ed=null;ft.textContent='منتج جديد (نسخة)';fill({...D.products.find(x=>x.id==i),name:''})}
 function del(i){if(confirm('حذف المنتج؟')){D.products=D.products.filter(x=>x.id!=i);w()}}
-function sv(){const m=[];if(!n.value.trim())m.push('الاسم');if(!img)m.push('الصورة');if(ofr.checked){if(!o.value||!$('#p').value)m.push('السعر قبل العرض وبعده');else if(+$('#p').value>=+o.value)m.push('سعر العرض يجب أن يكون أقل من السعر قبله')}if(!c.value)m.push('القسم (أضف قسماً أولاً)');if(m.length)return alert('أكمل الحقول التالية: '+m.join('، '));
-const p={id:ed||String(Date.now()),name:n.value.trim(),offer:ofr.checked,price:ofr.checked?+$('#p').value:+np.value||0,old:ofr.checked?+o.value:0,cat:c.value,desc:d.value.trim(),img,new:nw.checked,out:ou.checked,hidden:hi.checked,pin:pi.checked},k=D.products.findIndex(x=>x.id==ed);k>=0?D.products[k]=p:D.products.unshift(p);w();rs()}
-function bmv(){const L=[...document.querySelectorAll('.ck:checked')].map(x=>x.value);if(!L.length)return alert('حدد منتجات أولاً');D.products.forEach(p=>{if(L.includes(p.id))p.cat=bm.value});w()}
+function sv(){const m=[];if(!img)m.push('الصورة');if(!pn.value.trim())m.push('الاسم');if(!pc.value)m.push('القسم');if(pof.checked){if(!po.value||!pp.value)m.push('السعر قبل العرض وبعده');else if(+pp.value>=+po.value)m.push('سعر العرض يجب أن يكون أقل من السعر قبله')}
+if(m.length)return alert('أكمل الحقول التالية: '+m.join('، '));
+const p={id:ed||String(Date.now()),name:pn.value.trim(),cat:pc.value,desc:pd.value.trim(),img,offer:pof.checked,price:pof.checked?+pp.value:+pnp.value||0,old:pof.checked?+po.value:0,new:pnw.checked,out:pou.checked,hidden:phi.checked,pin:ppi.checked},k=D.products.findIndex(x=>x.id==ed);k>=0?D.products[k]=p:D.products.unshift(p);w();rs()}
+function bmv(){const L=[...document.querySelectorAll('.ck:checked')].map(x=>x.value);if(!L.length)return alert('حدد منتجات أولاً');if(!bm.value)return alert('اختر القسم');D.products.forEach(p=>{if(L.includes(p.id))p.cat=bm.value});w()}
 function ac(){const v=cn.value.trim();if(!v||D.categories.includes(v))return alert('اكتب اسماً غير مكرر');D.categories.push(v);cn.value='';w()}
 function mv(i,s){const j=i+s;if(j<0||j>=D.categories.length)return;[D.categories[i],D.categories[j]]=[D.categories[j],D.categories[i]];w()}
 function rn(i){const v=(prompt('الاسم الجديد',D.categories[i])||'').trim();if(!v||D.categories.includes(v))return;D.products.forEach(p=>{if(p.cat==D.categories[i])p.cat=v});D.categories[i]=v;w()}
 function dc(i){const x=D.categories[i];if(D.products.some(p=>p.cat==x))return alert('هذا القسم يحتوي على منتجات. انقلها إلى قسم آخر أولاً.');if(confirm('حذف القسم؟')){D.categories.splice(i,1);w()}}
-im.onchange=()=>{const q=im.files[0];if(!q)return;const r=new FileReader();r.onload=()=>{const t=new Image();t.onload=()=>{const s=Math.min(1,700/Math.max(t.width,t.height)),k=document.createElement('canvas');k.width=t.width*s;k.height=t.height*s;k.getContext('2d').drawImage(t,0,0,k.width,k.height);img=k.toDataURL('image/jpeg',.72);pv.src=img;pv.style.display='block'};t.src=r.result};r.readAsDataURL(q)};
-f.onchange=()=>{const r=new FileReader();r.onload=()=>{try{D=JSON.parse(r.result);if(!D.products||!D.categories)throw 0;localStorage.yd=JSON.stringify(D);go()}catch(x){alert('الملف غير صالح')}};r.readAsText(f.files[0])};
+function cmp(f,mx,cb){const r=new FileReader();r.onload=()=>{const t=new Image();t.onload=()=>{const s=Math.min(1,mx/Math.max(t.width,t.height)),k=document.createElement('canvas');k.width=t.width*s;k.height=t.height*s;k.getContext('2d').drawImage(t,0,0,k.width,k.height);cb(k.toDataURL('image/jpeg',.72))};t.src=r.result};r.readAsDataURL(f)}
+pim.onchange=()=>{if(pim.files[0])cmp(pim.files[0],700,d=>{img=d;ppv.src=d;ppv.style.display='block'})};
+function hero(i){if(i.files[0])cmp(i.files[0],900,d=>{D.shop.hero=d;w()})}
+fi.onchange=()=>{const r=new FileReader();r.onload=()=>{try{D=JSON.parse(r.result);if(!D.products||!D.categories)throw 0;localStorage.yd=JSON.stringify(D);go()}catch(x){alert('الملف غير صالح')}};r.readAsText(fi.files[0])};
 function out(nm){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D)],{type:'application/json'}));a.download=nm;a.click()}
-function hero(i){const q=i.files[0];if(!q)return;const r=new FileReader();r.onload=()=>{const m=new Image();m.onload=()=>{const s=Math.min(1,900/Math.max(m.width,m.height)),k=document.createElement('canvas');k.width=m.width*s;k.height=m.height*s;k.getContext('2d').drawImage(m,0,0,k.width,k.height);D.shop.hero=k.toDataURL('image/jpeg',.7);w()};m.src=r.result};r.readAsDataURL(q)}
-function dl(){out('products.json');dirty=0}function bk(){out('backup.json')}
 </script></body></html>
